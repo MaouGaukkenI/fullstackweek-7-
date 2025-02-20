@@ -1,26 +1,29 @@
 import { notFound } from "next/navigation";
 
-import { getProductByProductId } from "@/data/get_product_by_productId";
+import { getProductAndRestaurantByProductId } from "@/data/get_product_and_restaurant_by_productId";
 
+import ProductDetails from "../components/details";
 import ProductHeader from "./components/header";
 
 interface ProductPageProps {
-    params: Promise<{ slug: string, productId: string }>;
+  params: Promise<{ productId: string; slug: string }>;
 }
 
 const ProductPage = async ({ params }: ProductPageProps) => {
-    const { slug, productId } =  await params;
-    const product = await getProductByProductId(productId);
-    if(!product){
-        return notFound();
-    }
-    return (
-        <>
-          <ProductHeader product={product} />
+  const { productId, slug } = await params;
+  const product = await getProductAndRestaurantByProductId(productId);
+  if (!product) {
+    return notFound();
+  }
+  if (product.restaurant.slug.toUpperCase() != slug.toUpperCase()) {
+    return notFound();
+  }
+  return (
+    <div className="flex h-full flex-col">
+      <ProductHeader product={product} />
+      <ProductDetails product={product} />
+    </div>
+  );
+};
 
-          <h1>{slug}</h1>
-        </>
-    )
-}
- 
 export default ProductPage;
