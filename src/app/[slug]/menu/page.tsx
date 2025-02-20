@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 
-import { getRestaurantBySlug } from "@/data/get_restaurant_by_slug";
+import { getMenuCategoriesAndProductsBySlugRestaurant } from "@/data/get_menuCategories_and_products_by_slug_restaurant";
 
+import RestaurantCategories from "./components/categories";
 import RestaurantHeader from "./components/header";
 
 interface RestaurantMenuPageProps {
@@ -22,13 +23,15 @@ const RestaurantMenuPage = async ({
   if (!isConsuptionMethodValid(consumptionMethod)) {
     return notFound();
   }
-  const restaurant = await getRestaurantBySlug(slug);
+  const restaurant = await getMenuCategoriesAndProductsBySlugRestaurant(slug);
+  console.log(restaurant?.menuCategories);
   if (!restaurant) {
     return notFound();
   }
   return (
     <div>
       <RestaurantHeader restaurant={restaurant} />
+      <RestaurantCategories restaurant={restaurant} />
     </div>
   );
 };
