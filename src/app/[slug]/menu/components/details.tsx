@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { FormatCurrency } from "@/helpers/format_currency";
 interface ProductDetailsProps {
   product: Prisma.ProductGetPayload<{
@@ -28,7 +29,7 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
     setQuantity((prev) => (prev > 1 ? prev - 1 : prev));
   };
   return (
-    <div className="relativ z-50 mt-[-1.5rem] flex flex-auto flex-col rounded-t-3xl p-5">
+    <div className="relativ z-50 mt-[-1.5rem] flex flex-auto flex-col overflow-hidden rounded-t-3xl p-5">
       <div className="flex-auto">
         {/* RESTAURANTE */}
         <div className="flex items-center gap-1.5">
@@ -46,7 +47,7 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
         {/* NOME DO PRODUTO */}
         <h2 className="text-xl font-semibold">{product.name}</h2>
         {/* PREÇO E QUANTIDADE */}
-        <div className="flex items-center justify-between">
+        <div className="mt-3 flex items-center justify-between">
           <h3 className="text-xl font-semibold">
             {FormatCurrency(product.price)}
           </h3>
@@ -68,30 +69,38 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
             </Button>
           </div>
         </div>
-        {/* SOBRE */}
-        <div className="mt-6 space-y-3">
-          <h4 className="font-semibold">Sobre</h4>
-          <p className="text-sm text-muted-foreground">{product.description}</p>
-        </div>
-        {/* INGREDIENTES */}
-        {product.ingredients && product.ingredients.length > 0 && (
+      </div>
+      <ScrollArea className="h-full">
+        <div className="overflow-hidden">
+          {/* SOBRE */}
           <div className="mt-6 space-y-3">
-            <div className="flex items-center gap-1">
-              <ChefHat size={18} />
-              <h4 className="font-semibold">Ingredientes</h4>
-            </div>
+            <h4 className="font-semibold">Sobre</h4>
             <p className="text-sm text-muted-foreground">
-              {product.ingredients.map((ingredient: string, index: number) => (
-                <span key={index} className="block">
-                  • {ingredient}
-                </span>
-              ))}
+              {product.description}
             </p>
           </div>
-        )}
-      </div>
+          {/* INGREDIENTES */}
+          {product.ingredients && product.ingredients.length > 0 && (
+            <div className="mt-6 space-y-3">
+              <div className="flex items-center gap-1">
+                <ChefHat size={18} />
+                <h4 className="font-semibold">Ingredientes</h4>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {product.ingredients.map(
+                  (ingredient: string, index: number) => (
+                    <span key={index} className="block">
+                      • {ingredient}
+                    </span>
+                  ),
+                )}
+              </p>
+            </div>
+          )}
+        </div>
+      </ScrollArea>
       {/* ADICIONAR À SACOLA */}
-      <Button className="mt-4 w-full rounded-full"> Adicionar à sacola</Button>
+      <Button className="mt-2 w-full rounded-full"> Adicionar à sacola</Button>
     </div>
   );
 };
