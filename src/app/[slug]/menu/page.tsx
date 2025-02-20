@@ -24,7 +24,6 @@ const RestaurantMenuPage = async ({
     return notFound();
   }
   const restaurant = await getMenuCategoriesAndProductsBySlugRestaurant(slug);
-  console.log(restaurant?.menuCategories);
   if (!restaurant) {
     return notFound();
   }
