@@ -15,12 +15,20 @@ const CartProductItem = ({ product }: CartProductItemProps) => {
   const { decreaseCartProductQuantity, addCartProductQuantity, removeProduct } =
     useContext(CartContext);
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex items-center justify-between pb-3">
       {/* ESQUERDA */}
       <div className="flex items-center gap-3">
         <div className="relative h-20 w-20 rounded-xl bg-gray-100">
-          <Image src={product.imageUrl} alt={product.name} fill />
+          <div className="absolute inset-x-1 inset-y-1">
+            <Image
+              src={product.imageUrl}
+              alt={product.name}
+              fill
+              className="object-cover"
+            />
+          </div>
         </div>
+
         {/* DETALHES DO PRODUTO DO CARRINHO */}
         <div className="space-y-1">
           <p className="max-w-[90%] truncate text-ellipsis text-xs">
