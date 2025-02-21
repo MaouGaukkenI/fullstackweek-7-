@@ -15,6 +15,7 @@ export interface ICartContext {
   addProduct: (Product: CartProducts) => void;
   decreaseCartProductQuantity: (ProductId: string) => void;
   addCartProductQuantity: (ProductId: string) => void;
+  removeProduct: (ProductId: string) => void;
 }
 
 export const CartContext = createContext<ICartContext>({
@@ -24,6 +25,7 @@ export const CartContext = createContext<ICartContext>({
   addProduct: () => {},
   decreaseCartProductQuantity: () => {},
   addCartProductQuantity: () => {},
+  removeProduct: () => {},
 });
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
@@ -52,7 +54,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       }
     });
   };
-  const decreaseCartProductQuantity = (productId: string) => {
+  const decreaseProductQuantity = (productId: string) => {
     setProducts((prevProducts) => {
       return prevProducts.map((prevProduct) => {
         if (prevProduct.id === productId) {
@@ -68,7 +70,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       });
     });
   };
-  const addCartProductQuantity = (productId: string) => {
+  const addProductQuantity = (productId: string) => {
     setProducts((prevProducts) => {
       return prevProducts.map((prevProduct) => {
         if (prevProduct.id === productId) {
@@ -78,6 +80,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       });
     });
   };
+  const removeProduct = (productId: string) => {
+    setProducts((prevProducts) =>
+      prevProducts.filter((prevProduct) => prevProduct.id !== productId),
+    );
+  };
   return (
     <CartContext.Provider
       value={{
@@ -85,8 +92,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         products,
         togleCart,
         addProduct,
-        decreaseCartProductQuantity,
-        addCartProductQuantity,
+        decreaseCartProductQuantity: decreaseProductQuantity,
+        addCartProductQuantity: addProductQuantity,
+        removeProduct,
       }}
     >
       {children}
