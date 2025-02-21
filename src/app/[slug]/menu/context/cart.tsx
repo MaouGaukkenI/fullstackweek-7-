@@ -13,6 +13,8 @@ export interface ICartContext {
   products: CartProducts[];
   togleCart: () => void;
   addProduct: (Product: CartProducts) => void;
+  decreaseCartProductQuantity: (ProductId: string) => void;
+  addCartProductQuantity: (ProductId: string) => void;
 }
 
 export const CartContext = createContext<ICartContext>({
@@ -20,14 +22,16 @@ export const CartContext = createContext<ICartContext>({
   products: [],
   togleCart: () => {},
   addProduct: () => {},
+  decreaseCartProductQuantity: () => {},
+  addCartProductQuantity: () => {},
 });
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [products, setproducts] = useState<CartProducts[]>([]);
+  const [products, setProducts] = useState<CartProducts[]>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const togleCart = () => [setIsOpen((prev) => !prev)];
   const addProduct = (product: CartProducts) => {
-    setproducts((prevProducts) => {
+    setProducts((prevProducts) => {
       const existingProduct = prevProducts.find(
         (prevProduct) => prevProduct.id === product.id,
       );
@@ -48,13 +52,41 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       }
     });
   };
+  const decreaseCartProductQuantity = (productId: string) => {
+    setProducts((prevProducts) => {
+      return prevProducts.map((prevProduct) => {
+        if (prevProduct.id === productId) {
+          return {
+            ...prevProduct,
+            quantity:
+              prevProduct.quantity > 1
+                ? prevProduct.quantity - 1
+                : prevProduct.quantity,
+          };
+        }
+        return prevProduct;
+      });
+    });
+  };
+  const addCartProductQuantity = (productId: string) => {
+    setProducts((prevProducts) => {
+      return prevProducts.map((prevProduct) => {
+        if (prevProduct.id === productId) {
+          return { ...prevProduct, quantity: prevProduct.quantity + 1 };
+        }
+        return prevProduct;
+      });
+    });
+  };
   return (
     <CartContext.Provider
       value={{
         isOpen,
         products,
         togleCart,
-        addProduct: addProduct,
+        addProduct,
+        decreaseCartProductQuantity,
+        addCartProductQuantity,
       }}
     >
       {children}
