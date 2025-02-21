@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 
 import { getProductAndRestaurantByProductId } from "@/data/get_product_and_restaurant_by_productId";
 
-import ProductDetails from "../components/details";
+import ProductDetails from "./components/details";
 import ProductHeader from "./components/header";
 
 interface ProductPageProps {
