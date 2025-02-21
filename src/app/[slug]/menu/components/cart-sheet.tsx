@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/sheet";
 
 import { CartContext } from "../context/cart";
+import CartItem from "./cart-product-item";
 
 const CartSheet = () => {
   const { isOpen, togleCart, products } = useContext(CartContext);
@@ -17,16 +18,16 @@ const CartSheet = () => {
   return (
     <Sheet open={isOpen} onOpenChange={togleCart}>
       <SheetTrigger></SheetTrigger>
-      <SheetContent>
+      <SheetContent className="w-[86%]">
         <SheetHeader>
           <SheetTitle>Voce esta absolutamente bem!</SheetTitle>
           <SheetDescription>Que bom bora la!</SheetDescription>
         </SheetHeader>
-        {products.map((product) => (
-          <h1 key={product.id}>
-            {product.name} - {product.quantity}
-          </h1>
-        ))}
+        <div className="py-5">
+          {products.map((product) => (
+            <CartItem key={product.id} product={product} />
+          ))}
+        </div>
       </SheetContent>
     </Sheet>
   );
