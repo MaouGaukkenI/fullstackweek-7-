@@ -27,7 +27,24 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const togleCart = () => [setIsOpen((prev) => !prev)];
   const addProduct = (product: CartProducts) => {
-    setproducts((prev) => [...prev, product]);
+    const existingProductOnTheCart = products.some(
+      (prevProduct) => prevProduct.id === product.id,
+    );
+    if (!existingProductOnTheCart) {
+      // Produto já existe, atualiza a quantidade
+      return [...products, product];
+    }
+    setproducts((prevProduct) => {
+      // Produto não existe, adiciona ao carrinho
+      return prevProduct.map((prevProduct) => {
+        if (prevProduct.id === product.id) {
+          return {
+            ...prevProduct,
+            quantity: prevProduct.quantity + product.quantity,
+          };
+        }
+      });
+    });
   };
   return (
     <CartContext.Provider
