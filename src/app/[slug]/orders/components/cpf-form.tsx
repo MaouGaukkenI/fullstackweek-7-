@@ -55,7 +55,7 @@ const CpfForm = () => {
 
   const onSubmit = (data: FormSchema) => {
     startTransition(async () => {
-      router.push(`${pathname}?cpf=${data.cpf}`);
+      router.replace(`${pathname}?cpf=${data.cpf}`);
     });
   };
 
