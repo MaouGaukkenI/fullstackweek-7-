@@ -5,9 +5,7 @@ import CpfForm from "./components/cpf-form";
 import OrderList from "./components/order-list";
 
 interface OrdersPageProps {
-  searchParams: {
-    cpf: string;
-  };
+  searchParams?: { cpf?: string };
 }
 
 // Função para normalizar CPF
