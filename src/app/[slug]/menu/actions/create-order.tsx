@@ -26,6 +26,9 @@ export const createOrder = async (input: CreateOrderInput) => {
     throw new Error(`Restaurante não encontrado.`);
   }
   const productWithPrice = await db.product.findMany({
+    orderBy: {
+      createAt: "desc",
+    },
     where: {
       id: {
         in: input.products.map((product) => product.id),
@@ -67,5 +70,5 @@ export const createOrder = async (input: CreateOrderInput) => {
       },
     },
   });
-  redirect(`/${input.slug}/orders`);
+  redirect(`/${input.slug}/orders?cpf=${input.customerCPF}`);
 };
