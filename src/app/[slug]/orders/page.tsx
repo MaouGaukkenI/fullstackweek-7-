@@ -5,14 +5,15 @@ import CpfForm from "./components/cpf-form";
 import OrderList from "./components/order-list";
 
 interface OrdersPageProps {
-  searchParams?: { cpf?: string };
+  searchParams?: Promise<{ cpf?: string | undefined }>;
 }
 
 // Função para normalizar CPF
 const normalizeCPF = (cpf: string) => cpf.replace(/[^\d]/g, "");
 
 const OrdersPage = async ({ searchParams }: OrdersPageProps) => {
-  const cpf = searchParams?.cpf || ""; // Garante que não seja undefined
+  const params = await searchParams;
+  const cpf = params?.cpf || ""; // Garante que não seja undefined
   const cleanCPF = normalizeCPF(cpf);
 
   if (!cleanCPF || !validateCPF(cleanCPF)) {
