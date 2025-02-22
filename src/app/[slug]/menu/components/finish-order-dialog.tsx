@@ -1,8 +1,13 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ConsumptionMode } from "@prisma/client";
+import { Loader2Icon } from "lucide-react";
+import { useParams, useSearchParams } from "next/navigation";
+import { useContext, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { PatternFormat } from "react-number-format";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -27,6 +32,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { validateCPF } from "@/helpers/cpf";
 
+import { createOrder } from "../actions/create-order";
+import { CartContext } from "../context/cart";
+
 const formSchema = z.object({
   name: z.string().trim().min(1, { message: "O nome é obrigatório" }),
   cpf: z
@@ -48,6 +56,10 @@ interface FinishOrderDialogProps {
 }
 
 const FinishOrderDialog = ({ open, onOpenChange }: FinishOrderDialogProps) => {
+  const { slug } = useParams<{ slug: string }>();
+  const { products } = useContext(CartContext);
+  const searchParams = useSearchParams();
+  const [isPending, startTransition] = useTransition();
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -58,7 +70,24 @@ const FinishOrderDialog = ({ open, onOpenChange }: FinishOrderDialogProps) => {
   });
 
   const onSubmit = async (data: FormSchema) => {
-    console.log("Dados enviados:", data);
+    try {
+      const consumptionMethod = searchParams.get(
+        "consumptionMethod",
+      ) as ConsumptionMode;
+      startTransition(async () => {
+        await createOrder({
+          consumptionMethod,
+          customerName: data.name,
+          customerCPF: data.cpf,
+          products,
+          slug,
+        });
+        onOpenChange(false);
+        toast.success("Pedido finalizado com sucesso!");
+      }); // Adicionado para evitar erro de compilação
+    } catch (error) {
+      console.error(error);
+    } // Adicionado para evitar erro de compilação
   };
 
   return (
@@ -111,7 +140,9 @@ const FinishOrderDialog = ({ open, onOpenChange }: FinishOrderDialogProps) => {
                   type="submit"
                   variant="destructive"
                   className="rounded-full"
+                  disabled={isPending}
                 >
+                  {isPending && <Loader2Icon className="animate-spin" />}
                   Finalizar
                 </Button>
                 <DrawerClose asChild>
